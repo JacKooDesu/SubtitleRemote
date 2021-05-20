@@ -27,6 +27,14 @@ public class SubtitleReader : NetworkBehaviour
     public SubtitleObject selectedSubtitle;
     public SubtitleObject nextSubtitle;
 
+    [SerializeField]
+    List<string> talkers = new List<string>();
+    [SerializeField]
+    List<string> engSubs = new List<string>();
+    [SerializeField]
+    List<string> cnSubs = new List<string>();
+
+
     private void Start()
     {
         scrollContent = ((SubNetworkManager)NetworkManager.singleton).subScrollContent;
@@ -40,6 +48,14 @@ public class SubtitleReader : NetworkBehaviour
         if (isServer)
         {
             subFile = FileManager.LoadTexts("/Sub/", "subtitle");
+
+            List<List<string>> csvSubtitle = FileManager.LoadCSV("/Sub/", "csvSubtitle");
+            foreach (List<string> list in csvSubtitle)
+            {
+                talkers.Add(list[0]);
+                engSubs.Add(list[1]);
+                cnSubs.Add(list[2]);
+            }
 
             BuildUI();
 
@@ -118,16 +134,5 @@ public class SubtitleReader : NetworkBehaviour
             so.Init(s, this);
             subtitles.Add(so);
         }
-    }
-
-    private void Update()
-    {
-#if UNITY_ANDROID
-#else
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            greenPanel.SetActive(!greenPanel.activeInHierarchy);
-        }
-#endif
     }
 }

@@ -146,6 +146,32 @@ public static class FileManager
 
         return texts;
     }
+
+    public static List<List<string>> LoadCSV(string path, string fileName)
+    {
+
+#if UNITY_ANDROID
+        var filePath = Application.persistentDataPath + path + fileName + ".csv";
+#else
+        var filePath = @Application.dataPath + path + fileName + ".csv";
+#endif
+        List<List<string>> list = new List<List<string>>();
+        var reader = new StreamReader(filePath);
+
+        while (!reader.EndOfStream)
+        {
+            var line = reader.ReadLine();
+            var split = line.Split(',');
+            List<string> tempList = new List<string>();
+            foreach (string s in split)
+                tempList.Add(s);
+
+            list.Add(tempList);
+        }
+
+        reader.Close();
+        return list;
+    }
 }
 
 
